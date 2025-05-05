@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Contratos</title>
+<link rel="stylesheet"
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+
+<!-- CABECERA -->
+<div th:insert="~{fragments/cabecera :: navbar}"></div>
+
+</head>
+<body>
+	<div class="container mt-4">
+		<h2 class="mb-4">Lista de Contratos</h2>
+
+		<!-- Botón para agregar contrato -->
+		<button class="btn btn-success mb-3" data-bs-toggle="modal"
+			data-bs-target="#contratoModal" onclick="abrirModal()">Nuevo
+			Contrato</button>
+
+		<!-- Tabla de contratos -->
+		<table class="table table-bordered table-striped">
+			<thead>
+				<tr>
+					<th>ID</th>
+					<th>ID Empleado</th>
+					<th>ID Modelo de Contrato</th>
+					<th>ID Área</th>
+					<th>ID Jornada</th>
+					<th>Fecha Inicio</th>
+					<th>Fecha Fin</th>
+					<th>Días de Trabajo</th>
+					<th>Estado</th>
+					<th>Acciones</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="c : ${contratos}">
+					<td th:text="${c.conId}"></td>
+					<td th:text="${c.conEmpId}"></td>
+					<td th:text="${c.conModContId}"></td>
+					<td th:text="${c.conAreaId}"></td>
+					<td th:text="${c.conJornId}"></td>
+					<td th:text="${c.conFechaInicio}"></td>
+					<td th:text="${c.conFechaFin}"></td>
+					<td th:text="${c.conDiasTrabajo}"></td>
+					<td th:text="${c.conEstado}"></td>
+					<td>
+						<button class="btn btn-warning btn-sm" data-bs-toggle="modal"
+							data-bs-target="#contratoModal"
+							th:onclick="'editarContrato(' + ${c.conId} + ')'">Editar</button>
+						<!-- Botón de Eliminar -->
+						<form th:action="@{/contrato/eliminar/{id}(id=${c.conId})}"
+							method="post" style="display: inline;">
+							<button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+						</form>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+	<!-- Modal para insertar / editar contrato -->
+	<div class="modal fade" id="contratoModal" tabindex="-1"
+		aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<form th:action="@{/contrato/guardar}" method="post">
+					<div class="modal-header">
+						<h5 class="modal-title">Contrato</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+					</div>
+					<div class="modal-body">
+						<input type="hidden" name="conId" id="conId">
+						<div class="mb-3">
+							<label for="conEmpId" class="form-label">ID Empleado</label> <input
+								type="number" class="form-control" id="conEmpId" name="conEmpId"
+								required>
+						</div>
+						<div class="mb-3">
+							<label for="conModContId" class="form-label">ID Modelo
+								Contrato</label> <input type="number" class="form-control"
+								id="conModContId" name="conModContId" required>
+						</div>
+						<div class="mb-3">
+							<label for="conAreaId" class="form-label">ID Área</label> <input
+								type="number" class="form-control" id="conAreaId"
+								name="conAreaId" required>
+						</div>
+						<div class="mb-3">
+							<label for="conJornId" class="form-label">ID Jornada</label> <input
+								type="number" class="form-control" id="conJornId"
+								name="conJornId" required>
+						</div>
+						<div class="mb-3">
+							<label for="conFechaInicio" class="form-label">Fecha
+								Inicio</label> <input type="date" class="form-control"
+								id="conFechaInicio" name="conFechaInicio" required>
+						</div>
+						<div class="mb-3">
+							<label for="conFechaFin" class="form-label">Fecha Fin</label> <input
+								type="date" class="form-control" id="conFechaFin"
+								name="conFechaFin" required>
+						</div>
+						<div class="mb-3">
+							<label for="conDiasTrabajo" class="form-label">Días de
+								Trabajo</label> <input type="number" class="form-control"
+								id="conDiasTrabajo" name="conDiasTrabajo" required>
+						</div>
+						<div class="mb-3">
+							<label for="conEstado" class="form-label">Estado</label> <select
+								class="form-control" id="conEstado" name="conEstado" required>
+								<option value="1">Activo</option>
+								<option value="0">Inactivo</option>
+							</select>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="submit" class="btn btn-success">Guardar</button>
+						<button type="button" class="btn btn-secondary"
+							data-bs-dismiss="modal">Cancelar</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+
+	<!-- Scripts -->
+	<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+	<script>
+        function abrirModal() {
+            document.getElementById("conId").value = "";
+            document.getElementById("conEmpId").value = "";
+            document.getElementById("conModContId").value = "";
+            document.getElementById("conAreaId").value = "";
+            document.getElementById("conJornId").value = "";
+            document.getElementById("conFechaInicio").value = "";
+            document.getElementById("conFechaFin").value = "";
+            document.getElementById("conDiasTrabajo").value = "";
+            document.getElementById("conEstado").value = "1";  // Valor por defecto (Activo)
+        }
+
+        function editarContrato(id) {
+            fetch('/contrato/editar/' + id)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById("conId").value = data.conId;
+                    document.getElementById("conEmpId").value = data.conEmpId;
+                    document.getElementById("conModContId").value = data.conModContId;
+                    document.getElementById("conAreaId").value = data.conAreaId;
+                    document.getElementById("conJornId").value = data.conJornId;
+                    document.getElementById("conFechaInicio").value = data.conFechaInicio.substring(0, 10);  // Formato YYYY-MM-DD
+                    document.getElementById("conFechaFin").value = data.conFechaFin.substring(0, 10);  // Formato YYYY-MM-DD
+                    document.getElementById("conDiasTrabajo").value = data.conDiasTrabajo;
+                    document.getElementById("conEstado").value = data.conEstado;
+                });
+        }
+    </script>
+</body>
+</html>

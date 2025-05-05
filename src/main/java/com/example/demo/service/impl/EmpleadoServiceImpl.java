@@ -37,14 +37,14 @@ public class EmpleadoServiceImpl implements EmpleadoService{
 	@Override
 	public List<Empleado> buscarPorFiltro(String tipo, String valor) {
 	    switch (tipo) {
-	        case "dni":
+	        case "empDni":
 	            return empleadoRepository.findByEmpDni(valor);
-	        case "nombres":
+	        case "empApellidoPaterno":
+	            return empleadoRepository.findByEmpApellPaterno(valor);
+	        case "empApellidoMaterno":
+	            return empleadoRepository.findByEmpApellMaterno(valor);
+	        case "empNombres":
 	            return empleadoRepository.findByEmpNombres(valor);
-	        case "apellidoPaterno":
-	            return empleadoRepository.findByEmpApellidoPaterno(valor);
-	        case "apellidoMaterno":
-	            return empleadoRepository.findByEmpApellidoMaterno(valor);
 	        default:
 	            return empleadoRepository.findAll();
 	    }

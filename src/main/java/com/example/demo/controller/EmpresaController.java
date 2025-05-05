@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
+
 import com.example.demo.entity.Empresa;
 import com.example.demo.service.EmpresaService;
 
@@ -16,7 +18,7 @@ public class EmpresaController {
 	private EmpresaService empresaService;
 
 	// MOSTRAR EMPRESAS
-	@GetMapping("/lista")
+	/*@GetMapping("/ListaEmp")
 	@ResponseBody
 	public List<Empresa> listAllEmpresas() {
 		List<Empresa> empresas = empresaService.listAllEmpresa();
@@ -24,7 +26,17 @@ public class EmpresaController {
 			System.out.println("No se encontraron empresas en la base de datos.");
 		}
 		return empresas;
+	}*/
+	
+	//ListaEmpresas
+	@GetMapping("/ListaEmp")
+	public ModelAndView listAllEmpresas() {
+	    ModelAndView mav = new ModelAndView("ListaEmp");  // Nombre de la vista Thymeleaf
+	    mav.addObject("empresa", empresaService.listAllEmpresa());  // Agregar la lista de empresas
+	    return mav;
 	}
+
+	
 
 	// BUSCAR EMPRESAS SEGUN EL TIPO
 	@GetMapping("/buscar")
@@ -37,14 +49,22 @@ public class EmpresaController {
 		}
 	}
 
+	/*
 	// GUARDAR EMPRESA
 	@PostMapping("/guardar")
 	@ResponseBody
 	public String addEmpresa(@RequestBody Empresa empresa) {
 		empresaService.addCEmpresa(empresa);
 		return "Empresa guardada correctamente";
+	}*/
+
+	@PostMapping("/guardar")
+	public String addEmpresa(Empresa empresa) {
+	    empresaService.addCEmpresa(empresa);
+	    return "redirect:/empresa/ListaEmp"; // o donde quieras redirigir
 	}
 
+	
 	// EDITAR EMPRESA
 	@GetMapping("/editar/{id}")
 	@ResponseBody

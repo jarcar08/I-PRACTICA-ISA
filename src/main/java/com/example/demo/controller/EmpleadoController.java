@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
+
 import com.example.demo.entity.Empleado;
 import com.example.demo.service.EmpleadoService;
 
@@ -15,7 +17,7 @@ public class EmpleadoController {
 	@Qualifier("empleadoservice")
 	private EmpleadoService empleadoService;
 
-	// MOSTRAR EMPLEADOS
+	/*// MOSTRAR EMPLEADOS
 	@GetMapping("/lista")
 	@ResponseBody
 	public List<Empleado> listAllEmpleados() {
@@ -24,7 +26,15 @@ public class EmpleadoController {
 			System.out.println("No se encontraron empleados en la base de datos.");
 		}
 		return empleados;
-	}
+	}*/
+	
+	//ListaEmpresas
+		@GetMapping("/ListaEmpl")
+		public ModelAndView listAllEmpleados() {
+		    ModelAndView mav = new ModelAndView("ListaEmpl");  // Nombre de la vista Thymeleaf
+		    mav.addObject("empleado", empleadoService.listAllEmpleado());  // Agregar la lista de empresas
+		    return mav;
+		}
 
 	// BUSCAR EMPLEADOS SEGÚN EL TIPO
 	@GetMapping("/buscar")

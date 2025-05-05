@@ -12,7 +12,7 @@ import com.example.demo.service.DetalleBoletaService;
 @RequestMapping("/detalleboleta")
 public class DetalleBoletaController {
 	@Autowired
-	@Qualifier("contratoservice")
+	@Qualifier("detalleboletaservice")
 	private DetalleBoletaService detalleBoletaService;
 
 	// MOSTRAR DETALLE BOLETAS

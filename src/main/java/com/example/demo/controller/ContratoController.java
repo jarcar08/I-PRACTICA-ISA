@@ -1,10 +1,13 @@
 package com.example.demo.controller;
 
+import java.sql.Date;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
+
 import com.example.demo.entity.Contrato;
 import com.example.demo.service.ContratoService;
 
@@ -16,33 +19,45 @@ public class ContratoController {
 	private ContratoService contratoService;
 
 	// MOSTRAR CONTRATOS
-	@GetMapping("/lista")
-	@ResponseBody
-	public List<Contrato> listAllContratos() {
-		List<Contrato> contratos = contratoService.listAllContrato();
-		if (contratos == null || contratos.isEmpty()) {
-			System.out.println("No se encontraron contratos en la base de datos.");
-		}
-		return contratos;
+	@GetMapping("/ListaContratos")
+	public ModelAndView listAllContratos() {
+		ModelAndView mav = new ModelAndView("ListaContratos"); // Nombre de la vista Thymeleaf
+		mav.addObject("contratos", contratoService.listAllContratos());
+		return mav;
 	}
 
-	// BUSCAR CONTRATOS SEGUN EL TIPO
-	@GetMapping("/buscar")
-	@ResponseBody
-	public List<Contrato> buscarContrato(@RequestParam("tipo") String tipo, @RequestParam("valor") String valor) {
-		if (tipo.equals("todos")) {
-			return contratoService.listAllContrato();
-		} else {
-			return contratoService.buscarPorFiltro(tipo, valor);
-		}
-	}
-
-	// GUARDAR CONTRATO
+	// GUARDAR O ACTUALIZAR CONTRATO
 	@PostMapping("/guardar")
-	@ResponseBody
-	public String addContrato(@RequestBody Contrato contrato) {
-		contratoService.addContrato(contrato);
-		return "Contrato guardado correctamente";
+	// @ResponseBody
+	public String saveOrUpdateContrato(@RequestParam("conId") int conId, @RequestParam("conEmpId") int conEmpId,
+			@RequestParam("conModContId") int conModContId, @RequestParam("conAreaId") int conAreaId,
+			@RequestParam("conJornId") int conJornId, @RequestParam("conFechaInicio") String conFechaInicio,
+			@RequestParam("conFechaFin") String conFechaFin, @RequestParam("conDiasTrabajo") int conDiasTrabajo,
+			@RequestParam("conEstado") Byte conEstado) {
+		// Convertir las fechas de String a Date
+		Date fechaInicio = java.sql.Date.valueOf(conFechaInicio);
+		Date fechaFin = java.sql.Date.valueOf(conFechaFin);
+
+		// Crear un nuevo contrato o actualizar el existente
+		Contrato contrato;
+		if (conId > 0) {
+			// Si el ID es mayor a cero, actualizamos el contrato
+			contrato = contratoService.getContratoById(conId);
+			contrato.setConEmpId(conEmpId);
+			contrato.setConModContId(conModContId);
+			contrato.setConAreaId(conAreaId);
+			contrato.setConJornId(conJornId);
+			contrato.setConFechaInicio(fechaInicio);
+			contrato.setConFechaFin(fechaFin);
+			contrato.setConDiasTrabajo(conDiasTrabajo);
+			contrato.setConEstado(conEstado);
+		} else {
+			// Si no existe un contrato, creamos uno nuevo
+			contrato = new Contrato(conEmpId, conModContId, conAreaId, conJornId, conDiasTrabajo, fechaInicio, fechaFin, conDiasTrabajo,
+					conEstado);
+		}
+		contratoService.addContrato(contrato); // Guardamos el contrato (ya sea nuevo o actualizado)
+		return "redirect:/contrato/ListaContratos";
 	}
 
 	// EDITAR CONTRATO
@@ -53,10 +68,11 @@ public class ContratoController {
 	}
 
 	// ELIMINAR CONTRATO
-	@DeleteMapping("/eliminar/{id}")
-	@ResponseBody
+	// @DeleteMapping("/eliminar/{id}")
+	// @ResponseBody
+	@PostMapping("/eliminar/{id}")
 	public String deleteContrato(@PathVariable("id") int id) {
 		contratoService.deleteContrato(id);
-		return "Contrato eliminado correctamente";
+		return "redirect:/contrato/ListaContratos";
 	}
 }

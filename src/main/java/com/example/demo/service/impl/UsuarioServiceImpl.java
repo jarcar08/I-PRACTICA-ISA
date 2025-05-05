@@ -46,4 +46,10 @@ public class UsuarioServiceImpl implements UsuarioService{
             return listAllUsuario();
 		}
 	}
+
+	@Override
+	public Usuario validateUser(String usuCod, String usuPass) {
+		// TODO Auto-generated method stub
+		return usuarioRepository.findByUsuCodAndUsuPass(usuCod, usuPass);
+	}
 }
