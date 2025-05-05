@@ -3,7 +3,7 @@ import java.util.List;
 import com.example.demo.entity.Contrato;
 
 public interface ContratoService {
-	List<Contrato> listAllContrato();
+	List<Contrato> listAllContratos();
 	Contrato addContrato(Contrato contrato);
     void deleteContrato(int id);
     Contrato getContratoById(int id);

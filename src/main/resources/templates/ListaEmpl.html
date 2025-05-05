@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Empleados</title>
+<link rel="stylesheet"
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+	
+	<div th:insert="~{fragments/cabecera :: navbar}"></div>
+</head>
+<body>
+	<div class="container mt-4">
+		<h2 class="mb-4">Lista de Empleados</h2>
+
+		<!-- Búsqueda -->
+		<form method="get" th:action="@{/empleado/lista}" class="row g-3 mb-3">
+			<div class="col-md-4">
+				<input type="text" name="buscar" class="form-control"
+					placeholder="Buscar por DNI, Apellido paterno, Apellido Matero o Nombres">
+			</div>
+			<div class="col-auto">
+				<button type="submit" class="btn btn-primary">Buscar</button>
+				<a th:href="@{/empleado/lista}" class="btn btn-secondary">Limpiar</a>
+			</div>
+		</form>
+
+		<!-- Botón para agregar -->
+		<button class="btn btn-success mb-3" data-bs-toggle="modal"
+			data-bs-target="#empleadoModal" onclick="abrirModal()">Nuevo
+			Empleado</button>
+
+		<!-- Tabla de empleados -->
+		<table class="table table-bordered table-striped">
+			<thead>
+				<tr>
+					<th>ID</th>
+					<th>DNI</th>
+					<th>Apellido Paterno</th>
+					<th>Apellido Materno</th>
+					<th>Nombres</th>
+					<th>Genero</th>
+					<th>Correo</th>
+					<th>Fecha Nacimiento</th>
+					<th>Estado</th>
+					<th>Acciones</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="empleado : ${empleado}">
+					<td th:text="${empleado.empId}"></td>
+					<td th:text="${empleado.empDni}"></td>
+					<td th:text="${empleado.empApellPaterno}"></td>
+					<td th:text="${empleado.empApellMaterno}"></td>
+					<td th:text="${empleado.empNombres}"></td>
+					<td th:text="${empleado.empGenero}"></td>
+					<td th:text="${empleado.empCorreo}"></td>
+					<td th:text="${empleado.empFechaNacimiento}"></td>
+					<td th:text="${empleado.empEstado}"></td>
+					<td>
+						<button class="btn btn-warning btn-sm" data-bs-toggle="modal"
+							data-bs-target="#empleadoModal"
+							th:onclick="'editarEmpleado(' + ${empleado.empId} + ')'">Editar</button>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+	<!-- Modal para insertar / editar Empleado -->
+<div class="modal fade" id="empleadoModal" tabindex="-1" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<form th:action="@{/empleado/guardar}" method="post">
+				<div class="modal-header">
+					<h5 class="modal-title">Empleado</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+				</div>
+				<div class="modal-body">
+					<input type="hidden" name="empId" id="empId">
+
+					<div class="mb-3">
+						<label for="empDni" class="form-label">DNI</label>
+						<input type="text" class="form-control" id="empDni" name="empDni" required>
+					</div>
+
+					<div class="mb-3">
+						<label for="empApellPaterno" class="form-label">Apellido Paterno</label>
+						<input type="text" class="form-control" id="empApellPaterno" name="empApellPaterno" required>
+					</div>
+
+					<div class="mb-3">
+						<label for="empApellMaterno" class="form-label">Apellido Materno</label>
+						<input type="text" class="form-control" id="empApellMaterno" name="empApellMaterno" required>
+					</div>
+
+					<div class="mb-3">
+						<label for="empNombres" class="form-label">Nombres</label>
+						<input type="text" class="form-control" id="empNombres" name="empNombres" required>
+					</div>
+
+					<div class="mb-3">
+						<label for="empGenero" class="form-label">Género</label>
+						<select class="form-select" id="empGenero" name="empGenero" required>
+							<option value="">Seleccione</option>
+							<option value="M">Masculino</option>
+							<option value="F">Femenino</option>
+						</select>
+					</div>
+
+					<div class="mb-3">
+						<label for="empCorreo" class="form-label">Correo</label>
+						<input type="email" class="form-control" id="empCorreo" name="empCorreo" required>
+					</div>
+
+					<div class="mb-3">
+						<label for="empFechaNacimiento" class="form-label">Fecha de Nacimiento</label>
+						<input type="date" class="form-control" id="empFechaNacimiento" name="empFechaNacimiento" required>
+					</div>
+
+					<div class="mb-3">
+						<label for="empEstado" class="form-label">Estado</label>
+						<select class="form-select" id="empEstado" name="empEstado" required>
+							<option value="">Seleccione</option>
+							<option value="1">Activo</option>
+							<option value="0">Inactivo</option>
+						</select>
+					</div>
+
+				</div>
+				<div class="modal-footer">
+					<button type="submit" class="btn btn-success">Guardar</button>
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+	<!-- Scripts -->
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    function abrirModal() {
+        document.getElementById("empId").value = "";
+        document.getElementById("empDni").value = "";
+        document.getElementById("empApellPaterno").value = "";
+        document.getElementById("empApellMaterno").value = "";
+        document.getElementById("empNombres").value = "";
+        document.getElementById("empGenero").value = "";
+        document.getElementById("empCorreo").value = "";
+        document.getElementById("empFechaNacimiento").value = "";
+        document.getElementById("empEstado").value = "";
+    }
+
+    function editarEmpleado(id) {
+        fetch('/empleado/editar/' + id)
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("empId").value = data.empId;
+                document.getElementById("empDni").value = data.empDni;
+                document.getElementById("empApellPaterno").value = data.empApellPaterno;
+                document.getElementById("empApellMaterno").value = data.empApellMaterno;
+                document.getElementById("empNombres").value = data.empNombres;
+                document.getElementById("empGenero").value = data.empGenero;
+                document.getElementById("empCorreo").value = data.empCorreo;
+                document.getElementById("empFechaNacimiento").value = data.empFechaNacimiento;
+                document.getElementById("empEstado").value = data.empEstado;
+            });
+    }
+</script>
+</body>
+</html>

@@ -8,7 +8,7 @@ import com.example.demo.entity.Empleado;
 @Repository("empleadorepository")
 public interface EmpleadoRepository extends JpaRepository<Empleado, Serializable>{
 	List<Empleado> findByEmpDni(String empDni);
+	List<Empleado> findByEmpApellPaterno(String empApellPaterno);
+	List<Empleado> findByEmpApellMaterno(String empApellMaterno);
 	List<Empleado> findByEmpNombres(String empNombres);
-	List<Empleado> findByEmpApellidoPaterno(String empApellidoPaterno);
-	List<Empleado> findByEmpApellidoMaterno(String empApellidoMaterno);
 }

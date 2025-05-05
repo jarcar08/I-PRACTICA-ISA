@@ -10,4 +10,5 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Serializable>{
 	List<Usuario> findByIdusuario(int idusuario);
 	List<Usuario> findByUsuCod(String usuCod);
 	List<Usuario> findByUsuEmpId(int usuEmpId);
+	Usuario findByUsuCodAndUsuPass(String usuCod, String usuPass);
 }

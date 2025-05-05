@@ -38,9 +38,9 @@ public class EmpresaServiceImpl implements EmpresaService{
 		switch (tipo) {
         case "emprId":
             return empresaRepository.findByEmprId(Integer.parseInt(valor));
-        case "conIdEmp":
+        case "emprRuc":
             return empresaRepository.findByEmprRuc(valor);
-        case "conIdModEmpl":
+        case "emprNombre":
             return empresaRepository.findByEmprNombre(valor);
         default:
             return listAllEmpresa();

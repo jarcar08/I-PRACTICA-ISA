@@ -5,8 +5,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
+
 import com.example.demo.entity.Usuario;
 import com.example.demo.service.UsuarioService;
+
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 @RequestMapping("/usuario")
@@ -17,14 +21,11 @@ public class UsuarioController {
 	private UsuarioService usuarioService;
 
 	// MOSTRAR TODOS LOS USUARIOS
-	@GetMapping("/lista")
-	@ResponseBody
-	public List<Usuario> listAllUsuarios() {
-		List<Usuario> usuarios = usuarioService.listAllUsuario();
-		if (usuarios == null || usuarios.isEmpty()) {
-			System.out.println("No se encontraron usuarios en la base de datos.");
-		}
-		return usuarios;
+	@GetMapping("/ListaUsu")
+	public ModelAndView listAllUsuarios() {
+		ModelAndView mav = new ModelAndView("ListaUsu"); // Nombre de la vista Thymeleaf
+		mav.addObject("usuario", usuarioService.listAllUsuario()); // Agregar la lista de empresas
+		return mav;
 	}
 
 	// BUSCAR USUARIOS SEGÚN TIPO Y VALOR
@@ -60,4 +61,48 @@ public class UsuarioController {
 		usuarioService.deleteUsuario(id);
 		return "Usuario eliminado correctamente";
 	}
+
+	// Página de inicio que redirige al login
+	@RequestMapping("/")
+	public String redirectToLogin() {
+		return "redirect:/usuario/Login";
+	}
+
+	// Mostrar formulario de login
+	@GetMapping("/Login")
+	public ModelAndView showLoginForm() {
+		return new ModelAndView("Login");
+	}
+
+	@PostMapping("/Login")
+	public ModelAndView processLogin(@RequestParam("usuCod") String usuCod, @RequestParam("usuPass") String usuPass,
+			HttpSession session) {
+		// Aquí se hace la validación contra la base de datos
+		Usuario user = usuarioService.validateUser(usuCod, usuPass);
+		if (user != null) {
+			// Login exitoso
+			session.setAttribute("usuario", user); // Guarda el usuario en la sesión
+			//return new ModelAndView("redirect:/Inicio");
+			return new ModelAndView("inicio"); // se renderiza inicio.html desde /templates
+
+			//return new ModelAndView("redirect:/usuario/ListaUsu"); // Redirige al dashboard
+		} else {
+			// Login fallido
+			ModelAndView mav = new ModelAndView("Login");
+			mav.addObject("error", "Código o contraseña incorrectos"); // Muestra el error
+			return mav;
+		}
+	}
+
+	@GetMapping("/logout")
+	public String logout(HttpSession session) {
+		session.invalidate(); // Invalida toda la sesión
+		return "redirect:/usuario/Login"; // Redirige al formulario de login
+	}
+
+	@GetMapping("/Inicio")
+	public String mostrarInicio() {
+	    return "Inicio"; // Nombre del archivo HTML (Inicio.html)
+	}
+	
 }

@@ -8,4 +8,5 @@ public interface UsuarioService {
     void deleteUsuario(int id);
     Usuario getUsuarioById(int id);
     List<Usuario> buscarPorFiltro(String tipo, String valor);
+    public abstract Usuario validateUser(String usuCod, String usuPass);
 }

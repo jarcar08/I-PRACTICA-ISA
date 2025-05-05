@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Empresas</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <div th:insert="~{fragments/cabecera :: navbar}"></div>
+</head>
+<body>
+    <div class="container mt-4">
+        <h2 class="mb-4">Lista de Empresas</h2>
+
+        <!-- Búsqueda -->
+        <form method="get" th:action="@{/empresa/lista}" class="row g-3 mb-3">
+            <div class="col-md-4">
+                <input type="text" name="buscar" class="form-control" placeholder="Buscar por nombre o RUC">
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-primary">Buscar</button>
+                <a th:href="@{/empresa/lista}" class="btn btn-secondary">Limpiar</a>
+            </div>
+        </form>
+
+        <!-- Botón para agregar -->
+        <button class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#empresaModal" onclick="abrirModal()">Nueva Empresa</button>
+
+        <!-- Tabla de empresas -->
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>RUC</th>
+                    <th>Nombre</th>
+                    <th>Dirección</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="empresa : ${empresa}">
+                    <td th:text="${empresa.emprId}"></td>
+                    <td th:text="${empresa.emprRuc}"></td>
+                    <td th:text="${empresa.emprNombre}"></td>
+                    <td th:text="${empresa.emprDireccion}"></td>
+                    <td>
+                        <button class="btn btn-warning btn-sm" data-bs-toggle="modal"
+                                data-bs-target="#empresaModal"
+                                th:onclick="'editarEmpresa(' + ${empresa.emprId} + ')'">Editar</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Modal para insertar / editar -->
+    <div class="modal fade" id="empresaModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form th:action="@{/empresa/guardar}" method="post">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Empresa</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" name="emprId" id="emprId">
+                        <div class="mb-3">
+                            <label for="emprRuc" class="form-label">RUC</label>
+                            <input type="text" class="form-control" id="emprRuc" name="emprRuc" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="emprNombre" class="form-label">Nombre</label>
+                            <input type="text" class="form-control" id="emprNombre" name="emprNombre" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="emprDireccion" class="form-label">Dirección</label>
+                            <input type="text" class="form-control" id="emprDireccion" name="emprDireccion" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-success">Guardar</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function abrirModal() {
+            document.getElementById("emprId").value = "";
+            document.getElementById("emprRuc").value = "";
+            document.getElementById("emprNombre").value = "";
+            document.getElementById("emprDireccion").value = "";
+        }
+
+        function editarEmpresa(id) {
+            fetch('/empresa/editar/' + id)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById("emprId").value = data.emprId;
+                    document.getElementById("emprRuc").value = data.emprRuc;
+                    document.getElementById("emprNombre").value = data.emprNombre;
+                    document.getElementById("emprDireccion").value = data.emprDireccion;
+                });
+        }
+    </script>
+</body>
+</html>
