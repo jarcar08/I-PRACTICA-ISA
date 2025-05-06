@@ -31,8 +31,8 @@ public class EmpresaController {
 	//ListaEmpresas
 	@GetMapping("/ListaEmp")
 	public ModelAndView listAllEmpresas() {
-	    ModelAndView mav = new ModelAndView("ListaEmp");  // Nombre de la vista Thymeleaf
-	    mav.addObject("empresa", empresaService.listAllEmpresa());  // Agregar la lista de empresas
+	    ModelAndView mav = new ModelAndView("ListaEmp");
+	    mav.addObject("empresa", empresaService.listAllEmpresa());
 	    return mav;
 	}
 
@@ -49,19 +49,10 @@ public class EmpresaController {
 		}
 	}
 
-	/*
-	// GUARDAR EMPRESA
-	@PostMapping("/guardar")
-	@ResponseBody
-	public String addEmpresa(@RequestBody Empresa empresa) {
-		empresaService.addCEmpresa(empresa);
-		return "Empresa guardada correctamente";
-	}*/
-
 	@PostMapping("/guardar")
 	public String addEmpresa(Empresa empresa) {
 	    empresaService.addCEmpresa(empresa);
-	    return "redirect:/empresa/ListaEmp"; // o donde quieras redirigir
+	    return "redirect:/empresa/ListaEmp";
 	}
 
 	

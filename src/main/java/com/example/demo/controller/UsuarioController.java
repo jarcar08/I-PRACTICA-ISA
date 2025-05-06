@@ -23,8 +23,8 @@ public class UsuarioController {
 	// MOSTRAR TODOS LOS USUARIOS
 	@GetMapping("/ListaUsu")
 	public ModelAndView listAllUsuarios() {
-		ModelAndView mav = new ModelAndView("ListaUsu"); // Nombre de la vista Thymeleaf
-		mav.addObject("usuario", usuarioService.listAllUsuario()); // Agregar la lista de empresas
+		ModelAndView mav = new ModelAndView("ListaUsu");
+		mav.addObject("usuario", usuarioService.listAllUsuario());
 		return mav;
 	}
 
@@ -77,32 +77,26 @@ public class UsuarioController {
 	@PostMapping("/Login")
 	public ModelAndView processLogin(@RequestParam("usuCod") String usuCod, @RequestParam("usuPass") String usuPass,
 			HttpSession session) {
-		// Aquí se hace la validación contra la base de datos
 		Usuario user = usuarioService.validateUser(usuCod, usuPass);
 		if (user != null) {
-			// Login exitoso
-			session.setAttribute("usuario", user); // Guarda el usuario en la sesión
-			//return new ModelAndView("redirect:/Inicio");
-			return new ModelAndView("inicio"); // se renderiza inicio.html desde /templates
-
-			//return new ModelAndView("redirect:/usuario/ListaUsu"); // Redirige al dashboard
+			session.setAttribute("usuario", user);
+			return new ModelAndView("inicio");
 		} else {
-			// Login fallido
 			ModelAndView mav = new ModelAndView("Login");
-			mav.addObject("error", "Código o contraseña incorrectos"); // Muestra el error
+			mav.addObject("error", "Código o contraseña incorrectos");
 			return mav;
 		}
 	}
 
 	@GetMapping("/logout")
 	public String logout(HttpSession session) {
-		session.invalidate(); // Invalida toda la sesión
-		return "redirect:/usuario/Login"; // Redirige al formulario de login
+		session.invalidate();
+		return "redirect:/usuario/Login";
 	}
 
 	@GetMapping("/Inicio")
 	public String mostrarInicio() {
-	    return "Inicio"; // Nombre del archivo HTML (Inicio.html)
+		return "Inicio";
 	}
-	
+
 }

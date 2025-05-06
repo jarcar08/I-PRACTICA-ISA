@@ -1,4 +1,5 @@
 package com.example.demo.service.impl;
+
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -8,7 +9,7 @@ import com.example.demo.repository.AreaRepository;
 import com.example.demo.service.AreaService;
 
 @Service("areaservice")
-public class AreaServiceImpl implements AreaService{
+public class AreaServiceImpl implements AreaService {
 	@Autowired
 	@Qualifier("arearepository")
 	private AreaRepository areaRepository;
@@ -36,12 +37,12 @@ public class AreaServiceImpl implements AreaService{
 	@Override
 	public List<Area> buscarPorFiltro(String tipo, String valor) {
 		switch (tipo) {
-        case "areId":
-            return areaRepository.findByAreId(Integer.parseInt(valor));
-        case "areNombre":
-            return areaRepository.findByAreNombre(valor);
-        default:
-            return listAllArea();
+		case "areId":
+			return areaRepository.findByAreId(Integer.parseInt(valor));
+		case "areNombre":
+			return areaRepository.findByAreNombre(valor);
+		default:
+			return listAllArea();
 		}
 	}
 }
