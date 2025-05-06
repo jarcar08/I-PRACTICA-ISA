@@ -83,7 +83,6 @@ button {
 </head>
 <body>
 
-	<!-- Alerta de error si hay un mensaje -->
 	<div
 		class="alert alert-danger alert-dismissible fade show position-fixed top-0 end-0 m-3"
 		role="alert" th:if="${error != null}">
@@ -92,7 +91,6 @@ button {
 			aria-label="Close"></button>
 	</div>
 
-	<!-- Formulario de Login -->
 	<form action="/usuario/Login" method="post" class="login-form">
 		<h4 class="mb-4 text-center">INICIAR SESIÓN</h4>
 
@@ -106,11 +104,6 @@ button {
 				placeholder=" " required /> <label for="pass" class="form-label">Contraseña</label>
 		</div>
 
-		<!--<div class="text-center mb-3">
-			<a href="#"
-				class="forgot-link">¿Olvidaste tu contraseña?</a>
-		</div>  -->
-
 		<button type="submit" class="btn btn-primary w-100">Iniciar
 			sesión</button>
 	</form>
@@ -122,7 +115,6 @@ button {
 						function(event) {
 							if (event.persisted
 									|| (window.performance && window.performance.navigation.type === 2)) {
-								// La página fue cargada desde caché (back/forward)
 								window.location.reload();
 							}
 						});
